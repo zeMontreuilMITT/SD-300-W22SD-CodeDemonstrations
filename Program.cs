@@ -2,27 +2,71 @@
 // students can enroll in multiple courses
 // and a course can contain many enrolled students
 
-Student Othello = new Student("Othello", 1);
-Student Ophelia = new Student("Ophelia", 2);
-Student Henry = new Student("Henry", 3);
+Department SoftwareDeveloper = new Department("Software Developer");
 
-Course Shakespeare = new Course();
-Shakespeare.Title = "Intro to Shakespeare";
+Course courseOne = SoftwareDeveloper.CreateCourse("Intro to Logic");
+SoftwareDeveloper.CreateCourse("Parsing for Poets");
+SoftwareDeveloper.CreateCourse("How to Read Error Messages");
 
-Enrollment OpheliaInShakespeare = new Enrollment(Ophelia, Shakespeare);
-Shakespeare.Enrollments.Add(OpheliaInShakespeare);
-Ophelia.Enrollments.Add(OpheliaInShakespeare);
+Student newStudent = SoftwareDeveloper.RegisterStudent("Alex Dane");
+Student secondStudent = SoftwareDeveloper.RegisterStudent("Otherperson Normalguy");
 
-Enrollment HenryInShakespeare = new Enrollment(Henry, Shakespeare);
-Shakespeare.Enrollments.Add(HenryInShakespeare);
-Henry.Enrollments.Add(HenryInShakespeare);
+Console.WriteLine(newStudent.Department.Name);
 
-foreach(Enrollment e in Shakespeare.Enrollments)
+// Create a method on Department for registering a student in one of that department's courses
+// its parameters will be the Course Number, and the student number
+
+class Department
 {
-    Console.WriteLine($"{e.Student.FullName} is enrolled in {Shakespeare.Title}");
-}
+    public string Name { get; set; }
+    public ICollection<Student> Students { get; set; }
+    public ICollection<Course> Courses { get; set; }
+    public ICollection<Enrollment> Enrollments { get; set; }
+    public int CourseNumberCount { get; set; } = 1;
+    public int StudentCount { get; set; } = 1;
+    public Department(string name)
+    {
+        Name = name;
+        Students = new HashSet<Student>();
+        Courses = new HashSet<Course>();
+        Enrollments = new HashSet<Enrollment>();
+    }
 
-// iterate over the enrollments in Shakespeare to see all the students
+    public Student GetStudent(int id)
+    {
+        Student student;
+
+        foreach(Student s in Students)
+        {
+            if(s.StudentId == id)
+            {
+                student = s;
+                return student;
+            }
+        }
+        return null;
+    }
+
+    public Course CreateCourse(string courseTitle)
+    {
+        Course course = new Course(courseTitle, CourseNumberCount);
+        CourseNumberCount++;
+
+        Courses.Add(course);
+        course.Department = this;
+        return course;
+    }
+
+    public Student RegisterStudent(string name)
+    {
+        Student student = new Student(name, CourseNumberCount);
+        Students.Add(student);
+        StudentCount++;
+
+        student.Department = this;
+        return student;
+    }
+}
 
 
 class Student
@@ -30,6 +74,7 @@ class Student
     public string FullName { get; set; }
     public int StudentId { get; set; }
     public ICollection<Enrollment> Enrollments{ get; set; }
+    public Department Department { get; set; }
 
     public Student()
     {
@@ -51,9 +96,12 @@ class Course
     public string Title { get; set; }
     public int CourseNumber { get; set; }
     public ICollection<Enrollment> Enrollments { get; set; }
+    public Department Department { get; set; }
 
-    public Course()
+    public Course(string title, int courseNumber)
     {
+        Title = title;
+        CourseNumber = courseNumber;
         Enrollments = new HashSet<Enrollment>(); 
     }
 }
