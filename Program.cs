@@ -1,119 +1,75 @@
-﻿// Students and Courses
-// students can enroll in multiple courses
-// and a course can contain many enrolled students
+﻿Hotel.RegisterGuest("Garfield");
+Guest DoubleGarfield = Hotel.RegisterGuest("Garfield");
 
-Department SoftwareDeveloper = new Department("Software Developer");
+Guest Heathcliffe = new Guest("Heathcliffe");
+Guest Odie = new Guest("Odie");
 
-Course courseOne = SoftwareDeveloper.CreateCourse("Intro to Logic");
-SoftwareDeveloper.CreateCourse("Parsing for Poets");
-SoftwareDeveloper.CreateCourse("How to Read Error Messages");
+Room room101 = new Room(101);
+Room room102 = new Room(102);
+Room room103 = new Room(103);
 
-Student newStudent = SoftwareDeveloper.RegisterStudent("Alex Dane");
-Student secondStudent = SoftwareDeveloper.RegisterStudent("Otherperson Normalguy");
 
-Console.WriteLine(newStudent.Department.Name);
+static class Hotel
+{
+    public static HashSet<Guest> Guests { get; set; } = new HashSet<Guest>();
+    public static Guest RegisterGuest(string name)
+    {
+        Guest newGuest = new Guest(name);
+        Guests.Add(newGuest);
+        return newGuest;
+    }
 
-// Create a method on Department for registering a student in one of that department's courses
-// its parameters will be the Course Number, and the student number
+    // add a method for removing all of the guests stored in the Hotel
+    public static void RemoveAllGuests()
+    {
+        foreach(Guest guest in Guests)
+        {
+            Guests.Remove(guest);
+        }
+    }
 
-class Department
+    public static int GetNumberOfGuests()
+    {
+        return Guests.Count;
+    }
+}
+
+class Booking
+{
+    public bool IsCurrent { get; set; } = true;
+    public Guest Guest { get; set; }
+    public Room Room { get; set; }
+    public Booking(Guest guest, Room room)
+    {
+        Guest = guest;
+        Room = room;
+    }
+}
+
+class Guest
 {
     public string Name { get; set; }
-    public ICollection<Student> Students { get; set; }
-    public ICollection<Course> Courses { get; set; }
-    public ICollection<Enrollment> Enrollments { get; set; }
-    public int CourseNumberCount { get; set; } = 1;
-    public int StudentCount { get; set; } = 1;
-    public Department(string name)
+    public ICollection<Booking> Bookings { get; set; }
+    public Guest(string name)
     {
         Name = name;
-        Students = new HashSet<Student>();
-        Courses = new HashSet<Course>();
-        Enrollments = new HashSet<Enrollment>();
-    }
-
-    public Student GetStudent(int id)
-    {
-        Student student;
-
-        foreach(Student s in Students)
-        {
-            if(s.StudentId == id)
-            {
-                student = s;
-                return student;
-            }
-        }
-        return null;
-    }
-
-    public Course CreateCourse(string courseTitle)
-    {
-        Course course = new Course(courseTitle, CourseNumberCount);
-        CourseNumberCount++;
-
-        Courses.Add(course);
-        course.Department = this;
-        return course;
-    }
-
-    public Student RegisterStudent(string name)
-    {
-        Student student = new Student(name, CourseNumberCount);
-        Students.Add(student);
-        StudentCount++;
-
-        student.Department = this;
-        return student;
+        Bookings = new HashSet<Booking>();
     }
 }
 
-
-class Student
+class Room
 {
-    public string FullName { get; set; }
-    public int StudentId { get; set; }
-    public ICollection<Enrollment> Enrollments{ get; set; }
-    public Department Department { get; set; }
+    public int Number { get; set; }
+    public ICollection<Booking> Bookings { get; set; }
 
-    public Student()
+    public void CleanRoom()
     {
-        Enrollments = new HashSet<Enrollment>();
+        Console.WriteLine($"Cleaning Room {Number}");
     }
 
-    public Student(string name, int id)
+    public Room(int number)
     {
-        FullName = name;
-        StudentId = id;
-
-        Console.WriteLine($"Welcome to the school, {FullName}");
-        Enrollments = new HashSet<Enrollment>();
-    }
-}
-
-class Course
-{
-    public string Title { get; set; }
-    public int CourseNumber { get; set; }
-    public ICollection<Enrollment> Enrollments { get; set; }
-    public Department Department { get; set; }
-
-    public Course(string title, int courseNumber)
-    {
-        Title = title;
-        CourseNumber = courseNumber;
-        Enrollments = new HashSet<Enrollment>(); 
-    }
-}
-
-class Enrollment
-{
-    public Student Student { get; set; }
-    public Course Course { get; set; }
-
-    public Enrollment(Student student, Course course)
-    {
-        Student = student;
-        Course = course;
+        Number = number;
+        Bookings = new HashSet<Booking>();
     }
 }
