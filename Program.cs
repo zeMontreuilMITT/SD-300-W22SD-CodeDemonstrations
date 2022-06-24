@@ -1,119 +1,63 @@
-﻿// Students and Courses
-// students can enroll in multiple courses
-// and a course can contain many enrolled students
+﻿ISaysHello Entity;
+bool IsPerson = true;
 
-Department SoftwareDeveloper = new Department("Software Developer");
+if (IsPerson)
+{
+    Entity = new Person();
+} else
+{
+    Entity = new Alien();
+}
 
-Course courseOne = SoftwareDeveloper.CreateCourse("Intro to Logic");
-SoftwareDeveloper.CreateCourse("Parsing for Poets");
-SoftwareDeveloper.CreateCourse("How to Read Error Messages");
+Entity.SayHello();
 
-Student newStudent = SoftwareDeveloper.RegisterStudent("Alex Dane");
-Student secondStudent = SoftwareDeveloper.RegisterStudent("Otherperson Normalguy");
 
-Console.WriteLine(newStudent.Department.Name);
 
-// Create a method on Department for registering a student in one of that department's courses
-// its parameters will be the Course Number, and the student number
 
-class Department
+interface ISaysHello
+{
+    string SayHello();
+}
+
+interface IMakeSandwiches
+{
+    string MakeSandwiches(string mainIngredient);
+}
+
+interface IDoRocketScience
+{
+    int RocketNumbers();
+}
+
+class Person: ISaysHello, IMakeSandwiches
 {
     public string Name { get; set; }
-    public ICollection<Student> Students { get; set; }
-    public ICollection<Course> Courses { get; set; }
-    public ICollection<Enrollment> Enrollments { get; set; }
-    public int CourseNumberCount { get; set; } = 1;
-    public int StudentCount { get; set; } = 1;
-    public Department(string name)
+    public string SayHello()
     {
-        Name = name;
-        Students = new HashSet<Student>();
-        Courses = new HashSet<Course>();
-        Enrollments = new HashSet<Enrollment>();
+        return $"Hello, my name is {Name}, the Person";
     }
 
-    public Student GetStudent(int id)
+    public string MakeSandwiches(string mainIngredient)
     {
-        Student student;
-
-        foreach(Student s in Students)
-        {
-            if(s.StudentId == id)
-            {
-                student = s;
-                return student;
-            }
-        }
-        return null;
-    }
-
-    public Course CreateCourse(string courseTitle)
-    {
-        Course course = new Course(courseTitle, CourseNumberCount);
-        CourseNumberCount++;
-
-        Courses.Add(course);
-        course.Department = this;
-        return course;
-    }
-
-    public Student RegisterStudent(string name)
-    {
-        Student student = new Student(name, CourseNumberCount);
-        Students.Add(student);
-        StudentCount++;
-
-        student.Department = this;
-        return student;
+        return $"Because I implement IMakeSandwiches, I can make sandwiches with {mainIngredient}";
     }
 }
 
-
-class Student
+class Alien: ISaysHello, IDoRocketScience
 {
-    public string FullName { get; set; }
-    public int StudentId { get; set; }
-    public ICollection<Enrollment> Enrollments{ get; set; }
-    public Department Department { get; set; }
-
-    public Student()
+    public string AlienTitle { get; set; }
+    public int ValueOfPi { get; set; }
+    public string DoSomeAlienStuff()
     {
-        Enrollments = new HashSet<Enrollment>();
+        return "The alien does stuff.";
+    }
+    public string SayHello()
+    {
+        return $"Greetings, my name is {AlienTitle} and I am in fact an alien";
     }
 
-    public Student(string name, int id)
+    public int RocketNumbers()
     {
-        FullName = name;
-        StudentId = id;
-
-        Console.WriteLine($"Welcome to the school, {FullName}");
-        Enrollments = new HashSet<Enrollment>();
-    }
-}
-
-class Course
-{
-    public string Title { get; set; }
-    public int CourseNumber { get; set; }
-    public ICollection<Enrollment> Enrollments { get; set; }
-    public Department Department { get; set; }
-
-    public Course(string title, int courseNumber)
-    {
-        Title = title;
-        CourseNumber = courseNumber;
-        Enrollments = new HashSet<Enrollment>(); 
-    }
-}
-
-class Enrollment
-{
-    public Student Student { get; set; }
-    public Course Course { get; set; }
-
-    public Enrollment(Student student, Course course)
-    {
-        Student = student;
-        Course = course;
+        return Math.Max(1, 2);
     }
 }
