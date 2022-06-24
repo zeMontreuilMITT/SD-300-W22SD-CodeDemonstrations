@@ -1,63 +1,79 @@
-﻿ISaysHello Entity;
-bool IsPerson = true;
+﻿
+// create a new enum representing some kind of trait that all your animals will have but with different values that you restrict
+// provide a property to the parent Animal class
+// inherit Animal in your subclasses and give it a value in the constructor
 
-if (IsPerson)
+ICrawl firstAnimal;
+ICrawl secondAnimal;
+
+firstAnimal = new Cat();
+secondAnimal = new Amoeba();
+
+Console.WriteLine(firstAnimal.Crawl());
+Console.WriteLine(secondAnimal.Crawl());
+
+interface IJump
 {
-    Entity = new Person();
-} else
-{
-    Entity = new Alien();
+    string Jump();
 }
 
-Entity.SayHello();
-
-
-
-
-interface ISaysHello
+interface ICrawl
 {
-    string SayHello();
+    string Crawl();
 }
 
-interface IMakeSandwiches
+interface IDivide
 {
-    string MakeSandwiches(string mainIngredient);
+
 }
 
-interface IDoRocketScience
+class Animal
 {
-    int RocketNumbers();
+    public TypeOfSkin Skin { get; set; }
 }
 
-class Person: ISaysHello, IMakeSandwiches
+class Cat: Animal, IJump, ICrawl
 {
-    public string Name { get; set; }
-    public string SayHello()
+    public Cat()
     {
-        return $"Hello, my name is {Name}, the Person";
+        Skin = TypeOfSkin.Scales;
+    }
+    public string Jump()
+    {
+        return $"The cat jumps and lands on all fours, or possibly its forehead :( ";
     }
 
-    public string MakeSandwiches(string mainIngredient)
+    public string Crawl()
     {
-        return $"Because I implement IMakeSandwiches, I can make sandwiches with {mainIngredient}";
+        return $"The cat crawls on the ground on the ends of its paws";
     }
 }
 
-class Alien: ISaysHello, IDoRocketScience
+class Amoeba: Animal, IDivide, ICrawl
 {
-    public string AlienTitle { get; set; }
-    public int ValueOfPi { get; set; }
-    public string DoSomeAlienStuff()
+    public string Crawl()
     {
-        return "The alien does stuff.";
-    }
-    public string SayHello()
-    {
-        return $"Greetings, my name is {AlienTitle} and I am in fact an alien";
+        return "The amoeba crawls around in the petri dish using its pseudopods";
     }
 
-    public int RocketNumbers()
+    public Amoeba()
     {
-        return Math.Max(1, 2);
+        Skin = TypeOfSkin.Protoplasm;
     }
+}
+
+enum TypeOfSkin
+{
+    Epithelial = 100,
+    Scales = 1,
+    Fur,
+    Feathers,
+    Protoplasm,
+    Lipids
+}
+
+enum BloodType
+{
+    APositive,
+    ANegative,
 }
